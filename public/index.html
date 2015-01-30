@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="venues" ng-controller="AppCtrl as app">
+<script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+<script src="client/js/node_modules/bower_components/angular/angular.js"></script>
+<script src="js/angular-leaflet-directive.js"></script>
+<script src="js/controller.js"></script>
+
+<!--ul>
+    <li ng-repeat="venue in app.venues">
+       (<b>{{ $index + 1 }}</b>): {{venue.name}} ({{venue.categories[0].name}})
+        <br>
+        {{venue.location.address}},<br>
+        {{venue.location.city}}, {{venue.location.state}} {{ venue.location.postalCode | pad:5 }}.
+    </li>
+</ul-->
+
+<leaflet center="center" markers="markers" layers="layers" height="300px" width="940px"></leaflet>
+
+</body>
+</html>

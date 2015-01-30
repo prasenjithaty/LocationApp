@@ -77,8 +77,8 @@ router.get('/poi/:zip_code', function (req, res) {
         //        res.send(json);
         //    });
         //})
-        scrapeVenues(latlong[0], latlong[1], 0, respObj).then(insertVenues).then(getVenues).then(function (venues) {
-            res.send(venues);
+        scrapeVenues(latlong[0], latlong[1], 0, respObj).then(insertVenues).then(function () {
+            res.send("All venues for zip code [" + zip_code + "] saved successfully.");
         })
     })
 
@@ -182,19 +182,41 @@ function insertVenues(respObj) {
         }
     });
     //Venue.find({'location.postalCode': zip_code}, function (err, venues) {
-    console.log("zzzzz: " + respObj[0].venue.location.postalCode);
-    deferred.resolve(respObj[0].venue.location.postalCode);
     //}).populate('categories', 'name pluralName').exec();
+    deferred.resolve();
     return deferred.promise;
 }
 
+router.get('/zip/:zip_code', function (req, res) {
+    var zip_code = req.params.zip_code;
+    getVenues(zip_code).then(function (venues) {
+        //console.log(venues);
+        res.send(venues);
+    })
+});
+
 function getVenues(zip_code) {
-    console.log("here " + zip_code);
+    var lat, lon;
+    var jsonData = {};
     var deferred = Q.defer();
     var venues = Venue.find({'location.postalCode': zip_code}, function (err, venues) {
     }).populate('categories', 'name pluralName').exec();
-    console.log("here 1");
-    deferred.resolve(venues);
+    venues.then(function (venues) {
+        var query = Place.where({zip_code: zip_code});
+        query.select('lat_long -_id');
+        query.findOne(function (err, lat_long) {
+            if (err)
+                console.log("Place not found");
+            if (lat_long) {
+                lat = lat_long.lat_long.split('/')[0];
+                lon = lat_long.lat_long.split('/')[1];
+            }
+            jsonData.lat = lat;
+            jsonData.lon = lon;
+            jsonData.venues = venues;
+            deferred.resolve(jsonData);
+        });
+    });
     return deferred.promise;
 }
 

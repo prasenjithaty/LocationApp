@@ -14,6 +14,7 @@
     "mongoose": "latest",
     "node-foursquare": "latest",
     "async": "latest",
-    "q": "latest"
+    "q": "latest",
+    "cors": "latest"
   }
 }

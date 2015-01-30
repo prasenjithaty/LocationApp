@@ -8,6 +8,7 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/places');
+var cors = require("cors");
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -18,8 +19,17 @@ db.once('open', function (callback) {
 require('./models/models').initialize();
 var scrape_places = require('./places');
 var scrape_venues = require('./points-of-interest');
+
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 app.use('/places', scrape_places);
 app.use('/venues', scrape_venues);
+
+//app.use(cors());
 
 //var db = mongoose.connection;
 //db.on('error', console.error.bind(console, 'connection error:'));
